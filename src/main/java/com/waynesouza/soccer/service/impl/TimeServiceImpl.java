@@ -18,13 +18,14 @@ public class TimeServiceImpl implements TimeService {
     private final TimeRepository repository;
 
     @Override
-    public TimeDTO buscarOuSalvar(String nome) {
+    public Time buscarOuSalvar(String nome) {
         Time timeExistente = repository.findByNome(nome).orElse(null);
         if (Objects.isNull(timeExistente)) {
-            Time time = repository.save(mapper.map(TimeDTO.builder().nome(nome).build(), Time.class));
-            return mapper.map(time, TimeDTO.class);
+            TimeDTO timeDTO = new TimeDTO();
+            timeDTO.setNome(nome);
+            return repository.save(mapper.map(timeDTO, Time.class));
         }
-        return mapper.map(timeExistente, TimeDTO.class);
+        return timeExistente;
     }
 
 }

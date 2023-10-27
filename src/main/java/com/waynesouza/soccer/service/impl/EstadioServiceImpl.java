@@ -18,13 +18,14 @@ public class EstadioServiceImpl implements EstadioService {
     private final EstadioRepository repository;
 
     @Override
-    public EstadioDTO buscarOuSalvar(String nome) {
+    public Estadio buscarOuSalvar(String nome) {
         Estadio estadioExistente = repository.findByNome(nome).orElse(null);
         if (Objects.isNull(estadioExistente)) {
-            Estadio estadio = repository.save(mapper.map(EstadioDTO.builder().nome(nome).build(), Estadio.class));
-            return mapper.map(estadio, EstadioDTO.class);
+            EstadioDTO estadioDTO = new EstadioDTO();
+            estadioDTO.setNome(nome);
+            return repository.save(mapper.map(estadioDTO, Estadio.class));
         }
-        return mapper.map(estadioExistente, EstadioDTO.class);
+        return estadioExistente;
     }
 
 }

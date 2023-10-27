@@ -1,9 +1,9 @@
 package com.waynesouza.soccer.service;
 
-import com.waynesouza.soccer.service.dto.EstadioDTO;
+import com.waynesouza.soccer.domain.Estadio;
 
 public interface EstadioService {
 
-    EstadioDTO buscarOuSalvar(String nome);
+    Estadio buscarOuSalvar(String nome);
 
 }

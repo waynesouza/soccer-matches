@@ -1,9 +1,9 @@
 package com.waynesouza.soccer.service;
 
-import com.waynesouza.soccer.service.dto.TimeDTO;
+import com.waynesouza.soccer.domain.Time;
 
 public interface TimeService {
 
-    TimeDTO buscarOuSalvar(String nome);
+    Time buscarOuSalvar(String nome);
 
 }
