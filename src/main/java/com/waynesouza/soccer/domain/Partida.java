@@ -1,5 +1,6 @@
 package com.waynesouza.soccer.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -7,6 +8,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -20,20 +22,21 @@ import java.util.UUID;
 public class Partida implements Serializable {
 
     @Id
+    @UuidGenerator
     private UUID id;
 
     @ManyToOne
     @JoinColumn(name = "time_mandante_id")
     private Time timeMandante;
 
-    @JoinColumn(name = "qtd_gol_mandante")
+    @Column(name = "qtd_gol_mandante")
     private Integer golsMandante;
 
     @ManyToOne
     @JoinColumn(name = "time_visitante_id")
     private Time timeVisitante;
 
-    @JoinColumn(name = "qtd_gol_visitante")
+    @Column(name = "qtd_gol_visitante")
     private Integer golsVisitante;
 
     private LocalDate data;
