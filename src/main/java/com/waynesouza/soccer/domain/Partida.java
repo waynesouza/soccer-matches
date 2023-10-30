@@ -3,8 +3,6 @@ package com.waynesouza.soccer.domain;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,26 +23,25 @@ public class Partida implements Serializable {
     @UuidGenerator
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "time_mandante_id")
-    private Time timeMandante;
+    @Column(name = "time_mandante", nullable = false)
+    private String timeMandante;
 
-    @Column(name = "qtd_gol_mandante")
-    private Integer golsMandante;
+    @Column(name = "quantidade_gol_mandante", nullable = false)
+    private Integer quantidadeGolMandante;
 
-    @ManyToOne
-    @JoinColumn(name = "time_visitante_id")
-    private Time timeVisitante;
+    @Column(name = "time_visitante", nullable = false)
+    private String timeVisitante;
 
-    @Column(name = "qtd_gol_visitante")
-    private Integer golsVisitante;
+    @Column(name = "quantidade_gol_visitante", nullable = false)
+    private Integer quantidadeGolVisitante;
 
+    @Column(nullable = false)
     private LocalDate data;
 
+    @Column(nullable = false)
     private LocalTime horario;
 
-    @ManyToOne
-    @JoinColumn(name = "estadio_id")
-    private Estadio estadio;
+    @Column(nullable = false)
+    private String estadio;
 
 }
