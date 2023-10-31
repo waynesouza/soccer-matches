@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -19,23 +20,34 @@ public class PartidaServiceImpl implements PartidaService {
     private final PartidaRepository repository;
 
     @Override
-    public PartidaDTO salvar(PartidaDTO dto) throws Exception {
-        if (!verificarRegras(dto)) {
-            throw new Exception("Falha ao salvar!");
+    public PartidaDTO salvar(PartidaDTO dto) {
+        if (verificarRegras(dto)) {
+            throw new RuntimeException();
         }
         Partida partida = mapper.map(dto, Partida.class);
         return mapper.map(repository.save(partida), PartidaDTO.class);
     }
 
     private Boolean verificarRegras(PartidaDTO dto) {
-        LocalTime horario = dto.getHorario();
-        if (horario.isBefore(LocalTime.of(8, 0)) && horario.isAfter(LocalTime.of(22, 0))) {
-            return false;
-        } else if (repository.countPartidasByEstadioAndData(dto.getEstadio(), dto.getData()) > 0) {
-            return false;
-        // TODO regra para mais de uma partida de um mesmo clube com menos de dois dias de intervalo
-        } else return !LocalDateTime.of(dto.getData(), dto.getHorario()).isAfter(LocalDateTime.now());
+        return verificarHorario(dto.getHorario()) && verificarDisponibilidadeEstadio(dto.getEstadio(), dto.getData()) &&
+                verificarIntervaloEntrePartidas(dto.getTimeMandante(), dto.getTimeVisitante(), dto.getData(), dto.getHorario()) &&
+                verificarHorarioNoFuturo(dto.getData(), dto.getHorario());
     }
 
+    private Boolean verificarHorario(LocalTime horario) {
+        return horario.isAfter(LocalTime.of(22, 0)) || horario.isBefore(LocalTime.of(8, 0));
+    }
+
+    private Boolean verificarDisponibilidadeEstadio(String estadio, LocalDate data) {
+        return repository.countPartidasByEstadioAndData(estadio, data) <= 0;
+    }
+
+    private Boolean verificarIntervaloEntrePartidas(String timeMandante, String timeVisitante, LocalDate data, LocalTime horario) {
+        return repository.countPartidasByTimesAndData(timeMandante, timeVisitante, data, horario) == 0;
+    }
+
+    private Boolean verificarHorarioNoFuturo(LocalDate data, LocalTime horario) {
+        return LocalDateTime.of(data, horario).isAfter(LocalDateTime.now());
+    }
 
 }

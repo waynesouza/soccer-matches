@@ -4,6 +4,6 @@ import com.waynesouza.soccer.service.dto.PartidaDTO;
 
 public interface PartidaService {
 
-    PartidaDTO salvar(PartidaDTO dto) throws Exception;
+    PartidaDTO salvar(PartidaDTO dto);
 
 }

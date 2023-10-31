@@ -4,7 +4,6 @@ import com.waynesouza.soccer.service.PartidaService;
 import com.waynesouza.soccer.service.dto.PartidaDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +21,7 @@ public class PartidaController {
 
     @PostMapping
     public ResponseEntity<PartidaDTO> salvar(@Valid @RequestBody PartidaDTO dto) throws Exception {
-        return new ResponseEntity<>(partidaService.salvar(dto), HttpStatus.CREATED);
+        return ResponseEntity.ok(partidaService.salvar(dto));
     }
 
 }
