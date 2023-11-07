@@ -20,7 +20,7 @@ public class PartidaController {
     private final PartidaService partidaService;
 
     @PostMapping
-    public ResponseEntity<PartidaDTO> salvar(@Valid @RequestBody PartidaDTO dto) throws Exception {
+    public ResponseEntity<PartidaDTO> salvar(@Valid @RequestBody PartidaDTO dto) {
         return ResponseEntity.ok(partidaService.salvar(dto));
     }
 

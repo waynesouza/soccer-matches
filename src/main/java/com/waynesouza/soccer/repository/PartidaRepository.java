@@ -17,7 +17,7 @@ public interface PartidaRepository extends JpaRepository<Partida, UUID> {
     @Query("select count(p) from Partida p " +
             "where (p.timeMandante in (:timeMandante, :timeVisitante) " +
             "or p.timeVisitante in (:timeMandante, :timeVisitante)) " +
-            "and ((:data - p.data = 2 and :horario > p.horario) or (:data - p.data > 2)) ")
+            "and ((:data - p.data = 2 and :horario > p.horario) or (:data - p.data > 2))")
     Integer countPartidasByTimesAndData(String timeMandante, String timeVisitante, LocalDate data, LocalTime horario);
 
 }
