@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,11 +45,13 @@ public class PartidaServiceImpl implements PartidaService, VerificacaoBase {
     }
 
     private Boolean verificarDisponibilidadeEstadio(String estadio, LocalDate data) {
-        return repository.countPartidasByEstadioAndData(estadio, data) <= 0;
+        return repository.countPartidasByEstadioAndData(estadio, data) > 0;
     }
 
     private Boolean verificarIntervaloEntrePartidas(String timeMandante, String timeVisitante, LocalDate data, LocalTime horario) {
-        return repository.countPartidasByTimesAndData(timeMandante, timeVisitante, data, horario) == 0;
+        LocalDate dataLimiteInferior = data.minusDays(2);
+        LocalDate dataLimiteSuperior = data.plusDays(2);
+        return repository.countPartidasByTimesAndData(Arrays.asList(timeMandante, timeVisitante), dataLimiteInferior, dataLimiteSuperior, horario) != 0;
     }
 
     private Boolean verificarHorarioNoFuturo(LocalDate data, LocalTime horario) {
