@@ -1,31 +1,36 @@
 package com.waynesouza.soccer.repository;
 
 import com.waynesouza.soccer.domain.Partida;
+import com.waynesouza.soccer.service.dto.PartidaDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
 import java.util.UUID;
 
 @Repository
 public interface PartidaRepository extends JpaRepository<Partida, UUID> {
 
-    Integer countPartidasByEstadioAndData(String estadio, LocalDate data);
-
-    @Query("select count(p) from Partida p " +
-            "where (p.timeMandante in (:times) or p.timeVisitante in (:times)) " +
+    @Query("select count(p) > 0 from Partida p " +
+            "where (" +
+                "coalesce(:#{#dto.id}, null) is null or p.id != :#{#dto.id}" +
+            ") " +
             "and (" +
-            "(p.data > :dataLimiteInferior and p.data < :dataLimiteSuperior) or " +
-            "(p.data = :dataLimiteInferior and p.horario >= :horario) or " +
-            "(p.data = :dataLimiteSuperior and p.horario <= :horario)" +
+                "p.estadio = :#{#dto.estadio} and p.data = :#{#dto.data}" +
+            ")" +
+            "and (" +
+                "p.timeMandante in (:#{#dto.timeMandante}, :#{#dto.timeVisitante}) or " +
+                "p.timeVisitante in (:#{#dto.timeMandante}, :#{#dto.timeVisitante})" +
+            ") " +
+            "and (" +
+                "(p.data > :dataLimiteInferior and p.data < :dataLimiteSuperior) or " +
+                "(p.data = :dataLimiteInferior and p.horario >= :#{#dto.horario}) or " +
+                "(p.data = :dataLimiteSuperior and p.horario <= :#{#dto.horario})" +
             ")")
-    Integer countPartidasByTimesAndData(@Param("times") List<String> times,
-                                        @Param("dataLimiteInferior") LocalDate dataLimiteInferior,
-                                        @Param("dataLimiteSuperior") LocalDate dataLimiteSuperior,
-                                        @Param("horario") LocalTime horario);
+    Boolean verificarDisponibilidade(@Param("dto") PartidaDTO dto,
+                                     @Param("dataLimiteInferior") LocalDate dataLimiteInferior,
+                                     @Param("dataLimiteSuperior") LocalDate dataLimiteSuperior);
 
 }
