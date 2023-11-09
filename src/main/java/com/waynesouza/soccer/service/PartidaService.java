@@ -13,6 +13,10 @@ public interface PartidaService {
 
     List<PartidaDTO> listarTodas();
 
+    List<PartidaDTO> listarGoleadas();
+
+    List<PartidaDTO> listarPartidasSemGols();
+
     void excluir(String id);
 
 }

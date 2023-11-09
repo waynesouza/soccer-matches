@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface PartidaRepository extends JpaRepository<Partida, String> {
@@ -30,8 +31,16 @@ public interface PartidaRepository extends JpaRepository<Partida, String> {
                 "(p.dataHora between :dataLimiteInferior and :dataLimiteSuperior)" +
             ")")
     Boolean verificarDisponibilidade(@Param("dto") PartidaDTO dto,
-                                     @Param("data") LocalDate data,
                                      @Param("dataLimiteInferior")LocalDateTime dataLimiteInferior,
                                      @Param("dataLimiteSuperior")LocalDateTime dataLimiteSuperior);
+
+    @Query("select p from Partida p " +
+            "where p.quantidadeGolMandante - p.quantidadeGolVisitante >= 3 or " +
+            "p.quantidadeGolVisitante - p.quantidadeGolMandante >= 3")
+    List<Partida> listarGoleadas();
+
+    @Query("select p from Partida p " +
+            "where p.quantidadeGolMandante = 0 and p.quantidadeGolVisitante = 0")
+    List<Partida> listarPartidasSemGols();
 
 }
