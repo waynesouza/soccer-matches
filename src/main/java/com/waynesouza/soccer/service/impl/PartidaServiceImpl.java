@@ -4,9 +4,9 @@ import com.waynesouza.soccer.config.exception.ParametrizedMessageException;
 import com.waynesouza.soccer.domain.Partida;
 import com.waynesouza.soccer.repository.PartidaRepository;
 import com.waynesouza.soccer.service.PartidaService;
-import com.waynesouza.soccer.service.dto.PartidaAtualizadaDTO;
-import com.waynesouza.soccer.service.dto.PartidaDTO;
-import com.waynesouza.soccer.service.util.VerificacaoBase;
+import com.waynesouza.soccer.dto.PartidaAtualizadaDTO;
+import com.waynesouza.soccer.dto.PartidaDTO;
+import com.waynesouza.soccer.service.util.RegraBase;
 import com.waynesouza.soccer.util.ConstantesUtil;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.Conditions;
@@ -16,11 +16,13 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class PartidaServiceImpl implements PartidaService, VerificacaoBase {
+public class PartidaServiceImpl implements PartidaService, RegraBase {
 
     private final ModelMapper mapper;
     private final PartidaRepository repository;
@@ -34,7 +36,7 @@ public class PartidaServiceImpl implements PartidaService, VerificacaoBase {
 
     @Override
     public PartidaDTO atualizar(String id, PartidaAtualizadaDTO partidaAtualizadaDTO) {
-        PartidaDTO partidaDTO = buscarPeloId(id);
+        PartidaDTO partidaDTO = mapper.map(buscarPeloId(id), PartidaDTO.class);
         mapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
         mapper.map(partidaAtualizadaDTO, partidaDTO);
         verificarRegras(partidaDTO);
@@ -42,10 +44,21 @@ public class PartidaServiceImpl implements PartidaService, VerificacaoBase {
         return mapper.map(repository.save(partida), PartidaDTO.class);
     }
 
-    private PartidaDTO buscarPeloId(String id) {
-        Partida partida = repository.findById(id)
+    @Override
+    public List<PartidaDTO> listarTodas() {
+        return repository.findAll()
+                .stream().map(partida -> mapper.map(partida, PartidaDTO.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public void excluir(String id) {
+        Partida partida = buscarPeloId(id);
+        repository.delete(partida);
+    }
+
+    private Partida buscarPeloId(String id) {
+        return repository.findById(id)
                 .orElseThrow(() -> new ParametrizedMessageException(ConstantesUtil.ERRO_PARTIDA_NAO_ENCONTRADA));
-        return mapper.map(partida, PartidaDTO.class);
     }
 
     private void verificarRegras(PartidaDTO dto) {

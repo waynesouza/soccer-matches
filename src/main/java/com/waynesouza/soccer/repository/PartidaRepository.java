@@ -1,7 +1,7 @@
 package com.waynesouza.soccer.repository;
 
 import com.waynesouza.soccer.domain.Partida;
-import com.waynesouza.soccer.service.dto.PartidaDTO;
+import com.waynesouza.soccer.dto.PartidaDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
