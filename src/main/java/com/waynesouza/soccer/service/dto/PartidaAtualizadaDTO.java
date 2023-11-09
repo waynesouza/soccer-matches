@@ -7,8 +7,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -26,9 +25,7 @@ public class PartidaAtualizadaDTO implements Serializable {
     @Digits(integer = 2, fraction = 0, message = "O valor deve ser um número inteiro positivo ou zero")
     private Integer quantidadeGolVisitante;
 
-    private LocalDate data;
-
-    private LocalTime horario;
+    private LocalDateTime dataHora;
 
     private String estadio;
 

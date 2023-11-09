@@ -8,15 +8,13 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.UUID;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 public class PartidaDTO implements Serializable {
 
-    private UUID id;
+    private String id;
 
     @NotNull(message = "O time mandante deve ser informado")
     private String timeMandante;
@@ -34,11 +32,8 @@ public class PartidaDTO implements Serializable {
     @Digits(integer = 2, fraction = 0, message = "O valor deve ser um número inteiro positivo ou zero")
     private Integer quantidadeGolVisitante;
 
-    @NotNull(message = "A data da partida deve ser informada")
-    private LocalDate data;
-
-    @NotNull(message = "O horário da partida deve ser informado")
-    private LocalTime horario;
+    @NotNull(message = "A data com o horário da partida deve ser informada")
+    private LocalDateTime dataHora;
 
     @NotNull(message = "O estádio da partida deve ser informado")
     private String estadio;

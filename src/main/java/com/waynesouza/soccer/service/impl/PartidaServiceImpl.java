@@ -13,12 +13,10 @@ import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +33,7 @@ public class PartidaServiceImpl implements PartidaService, VerificacaoBase {
     }
 
     @Override
-    public PartidaDTO atualizar(UUID id, PartidaAtualizadaDTO partidaAtualizadaDTO) {
+    public PartidaDTO atualizar(String id, PartidaAtualizadaDTO partidaAtualizadaDTO) {
         PartidaDTO partidaDTO = buscarPeloId(id);
         mapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
         mapper.map(partidaAtualizadaDTO, partidaDTO);
@@ -44,7 +42,7 @@ public class PartidaServiceImpl implements PartidaService, VerificacaoBase {
         return mapper.map(repository.save(partida), PartidaDTO.class);
     }
 
-    private PartidaDTO buscarPeloId(UUID id) {
+    private PartidaDTO buscarPeloId(String id) {
         Partida partida = repository.findById(id)
                 .orElseThrow(() -> new ParametrizedMessageException(ConstantesUtil.ERRO_PARTIDA_NAO_ENCONTRADA));
         return mapper.map(partida, PartidaDTO.class);
@@ -52,9 +50,10 @@ public class PartidaServiceImpl implements PartidaService, VerificacaoBase {
 
     private void verificarRegras(PartidaDTO dto) {
         Map<String, Boolean> regras = new HashMap<>();
-        regras.put(ConstantesUtil.ERRO_HORARIO_PARTIDA, verificarHorario(dto.getHorario()));
-        regras.put(ConstantesUtil.ERRO_DISPONIBILIDADE, verificarDisponibilidade(dto));
-        regras.put(ConstantesUtil.ERRO_PARTIDA_FUTURO, verificarHorarioNoFuturo(dto.getData(), dto.getHorario()));
+        regras.put(ConstantesUtil.ERRO_HORARIO_PARTIDA, verificarHorario(dto.getDataHora().toLocalTime()));
+        regras.put(ConstantesUtil.ERRO_DISPONIBILIDADE_ESTADIO, verificarEstadio(dto));
+        regras.put(ConstantesUtil.ERRO_DISPONIBILIDADE_PARTIDA, verificarDisponibilidade(dto));
+        regras.put(ConstantesUtil.ERRO_PARTIDA_FUTURO, verificarHorarioNoFuturo(dto.getDataHora()));
         regras.forEach((mensagem, condicao) -> verificarRegra(condicao, mensagem));
     }
 
@@ -62,14 +61,18 @@ public class PartidaServiceImpl implements PartidaService, VerificacaoBase {
         return horario.isAfter(LocalTime.of(22, 0)) || horario.isBefore(LocalTime.of(8, 0));
     }
 
-    private Boolean verificarDisponibilidade(PartidaDTO dto) {
-        LocalDate dataLimiteInferior = dto.getData().minusDays(2);
-        LocalDate dataLimiteSuperior = dto.getData().plusDays(2);
-        return repository.verificarDisponibilidade(dto, dataLimiteInferior, dataLimiteSuperior);
+    private Boolean verificarEstadio(PartidaDTO dto) {
+        return repository.verificarEstadio(dto.getEstadio(), dto.getDataHora().toLocalDate());
     }
 
-    private Boolean verificarHorarioNoFuturo(LocalDate data, LocalTime horario) {
-        return LocalDateTime.of(data, horario).isAfter(LocalDateTime.now());
+    private Boolean verificarDisponibilidade(PartidaDTO dto) {
+        LocalDateTime dataLimiteInferior = dto.getDataHora().minusDays(2);
+        LocalDateTime dataLimiteSuperior = dto.getDataHora().plusDays(2);
+        return repository.verificarDisponibilidade(dto, dto.getDataHora().toLocalDate(), dataLimiteInferior, dataLimiteSuperior);
+    }
+
+    private Boolean verificarHorarioNoFuturo(LocalDateTime dataHora) {
+        return dataHora.isAfter(LocalDateTime.now());
     }
 
 }

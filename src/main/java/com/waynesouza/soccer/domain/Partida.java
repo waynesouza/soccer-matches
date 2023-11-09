@@ -9,9 +9,7 @@ import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.UUID;
+import java.time.LocalDateTime;
 
 @Table(name = "partida")
 @Entity
@@ -21,7 +19,7 @@ public class Partida implements Serializable {
 
     @Id
     @UuidGenerator
-    private UUID id;
+    private String id;
 
     @Column(name = "time_mandante", nullable = false)
     private String timeMandante;
@@ -36,10 +34,7 @@ public class Partida implements Serializable {
     private Integer quantidadeGolVisitante;
 
     @Column(nullable = false)
-    private LocalDate data;
-
-    @Column(nullable = false)
-    private LocalTime horario;
+    private LocalDateTime dataHora;
 
     @Column(nullable = false)
     private String estadio;

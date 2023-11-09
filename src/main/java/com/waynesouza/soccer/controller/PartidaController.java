@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.UUID;
-
 @RestController
 @RequestMapping("/api/partida")
 @RequiredArgsConstructor
@@ -30,7 +28,7 @@ public class PartidaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PartidaDTO> atualizar(@PathVariable("id") UUID id, @RequestBody PartidaAtualizadaDTO dto) {
+    public ResponseEntity<PartidaDTO> atualizar(@PathVariable("id") String id, @RequestBody PartidaAtualizadaDTO dto) {
         return ResponseEntity.ok(partidaService.atualizar(id, dto));
     }
 
