@@ -46,8 +46,17 @@ public class PartidaServiceImpl implements PartidaService, RegraBase {
 
     @Override
     public List<PartidaDTO> listarTodas() {
-        return repository.findAll()
-                .stream().map(partida -> mapper.map(partida, PartidaDTO.class)).collect(Collectors.toList());
+        return converterListaParaDTO(repository.findAll());
+    }
+
+    @Override
+    public List<PartidaDTO> listarGoleadas() {
+        return converterListaParaDTO(repository.listarGoleadas());
+    }
+
+    @Override
+    public List<PartidaDTO> listarPartidasSemGols() {
+        return converterListaParaDTO(repository.listarPartidasSemGols());
     }
 
     @Override
@@ -81,11 +90,15 @@ public class PartidaServiceImpl implements PartidaService, RegraBase {
     private Boolean verificarDisponibilidade(PartidaDTO dto) {
         LocalDateTime dataLimiteInferior = dto.getDataHora().minusDays(2);
         LocalDateTime dataLimiteSuperior = dto.getDataHora().plusDays(2);
-        return repository.verificarDisponibilidade(dto, dto.getDataHora().toLocalDate(), dataLimiteInferior, dataLimiteSuperior);
+        return repository.verificarDisponibilidade(dto, dataLimiteInferior, dataLimiteSuperior);
     }
 
     private Boolean verificarHorarioNoFuturo(LocalDateTime dataHora) {
         return dataHora.isAfter(LocalDateTime.now());
+    }
+
+    private List<PartidaDTO> converterListaParaDTO(List<Partida> partidas) {
+        return partidas.stream().map(partida -> mapper.map(partida, PartidaDTO.class)).collect(Collectors.toList());
     }
 
 }
