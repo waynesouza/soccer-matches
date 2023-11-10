@@ -1,7 +1,7 @@
 package com.waynesouza.soccer.repository;
 
 import com.waynesouza.soccer.domain.Partida;
-import com.waynesouza.soccer.dto.PartidaDTO;
+import com.waynesouza.soccer.domain.dto.PartidaDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -42,5 +42,17 @@ public interface PartidaRepository extends JpaRepository<Partida, String> {
     @Query("select p from Partida p " +
             "where p.quantidadeGolMandante = 0 and p.quantidadeGolVisitante = 0")
     List<Partida> listarPartidasSemGols();
+
+    @Query("select p from Partida p " +
+            "where (" +
+                "(:filtro = 'MANDANTE' and p.timeMandante = :time) or " +
+                "(:filtro = 'VISITANTE' and p.timeVisitante = :time)" +
+            ") " +
+            "or (" +
+                "(:filtro is null) and " +
+                "(p.timeMandante = :time or p.timeVisitante = :time)" +
+            ")")
+    List<Partida> listarPartidasPorTime(@Param("time") String time,
+                                        @Param("filtro") String filtro);
 
 }

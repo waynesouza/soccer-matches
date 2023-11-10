@@ -4,8 +4,8 @@ import com.waynesouza.soccer.config.exception.ParametrizedMessageException;
 import com.waynesouza.soccer.domain.Partida;
 import com.waynesouza.soccer.repository.PartidaRepository;
 import com.waynesouza.soccer.service.PartidaService;
-import com.waynesouza.soccer.dto.PartidaAtualizadaDTO;
-import com.waynesouza.soccer.dto.PartidaDTO;
+import com.waynesouza.soccer.domain.dto.PartidaAtualizadaDTO;
+import com.waynesouza.soccer.domain.dto.PartidaDTO;
 import com.waynesouza.soccer.service.util.RegraBase;
 import com.waynesouza.soccer.util.ConstantesUtil;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,11 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static com.waynesouza.soccer.util.ConstantesUtil.MANDANTE;
+import static com.waynesouza.soccer.util.ConstantesUtil.VISITANTE;
 
 @Service
 @RequiredArgsConstructor
@@ -57,6 +61,14 @@ public class PartidaServiceImpl implements PartidaService, RegraBase {
     @Override
     public List<PartidaDTO> listarPartidasSemGols() {
         return converterListaParaDTO(repository.listarPartidasSemGols());
+    }
+
+    @Override
+    public List<PartidaDTO> listarPartidasPorTime(String time, String filtro) {
+        if (Objects.nonNull(filtro) && !List.of(MANDANTE, VISITANTE).contains(filtro)) {
+            throw new ParametrizedMessageException(ConstantesUtil.ERRO_VALOR_INVALIDO);
+        }
+        return converterListaParaDTO(repository.listarPartidasPorTime(time, filtro));
     }
 
     @Override

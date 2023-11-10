@@ -1,7 +1,7 @@
 package com.waynesouza.soccer.service;
 
-import com.waynesouza.soccer.dto.PartidaAtualizadaDTO;
-import com.waynesouza.soccer.dto.PartidaDTO;
+import com.waynesouza.soccer.domain.dto.PartidaAtualizadaDTO;
+import com.waynesouza.soccer.domain.dto.PartidaDTO;
 
 import java.util.List;
 
@@ -16,6 +16,8 @@ public interface PartidaService {
     List<PartidaDTO> listarGoleadas();
 
     List<PartidaDTO> listarPartidasSemGols();
+
+    List<PartidaDTO> listarPartidasPorTime(String time, String filtro);
 
     void excluir(String id);
 
