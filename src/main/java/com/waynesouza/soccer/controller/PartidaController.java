@@ -67,6 +67,11 @@ public class PartidaController {
         return ResponseEntity.ok(service.listarPartidasPorTime(time, filtro));
     }
 
+    @GetMapping("/estadio/")
+    public ResponseEntity<List<PartidaDTO>> listarPartidasPorEstadio(@RequestParam("estadio") String estadio) {
+        log.info("Requisição para listar as partidas de um estádio específico");
+        return ResponseEntity.ok(service.listarPartidasPorEstadio(estadio));
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(@PathVariable("id") String id) {
