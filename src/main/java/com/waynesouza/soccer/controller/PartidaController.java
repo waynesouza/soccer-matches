@@ -1,8 +1,8 @@
 package com.waynesouza.soccer.controller;
 
 import com.waynesouza.soccer.service.PartidaService;
-import com.waynesouza.soccer.dto.PartidaAtualizadaDTO;
-import com.waynesouza.soccer.dto.PartidaDTO;
+import com.waynesouza.soccer.domain.dto.PartidaAtualizadaDTO;
+import com.waynesouza.soccer.domain.dto.PartidaDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -35,7 +36,8 @@ public class PartidaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PartidaDTO> atualizar(@PathVariable("id") String id, @RequestBody PartidaAtualizadaDTO dto) {
+    public ResponseEntity<PartidaDTO> atualizar(@PathVariable("id") String id,
+                                                @RequestBody PartidaAtualizadaDTO dto) {
         log.info("Requisição para atualizar os dados de uma partida");
         return ResponseEntity.ok(service.atualizar(id, dto));
     }
@@ -56,6 +58,13 @@ public class PartidaController {
     public ResponseEntity<List<PartidaDTO>> listarPartidasSemGols() {
         log.info("Requisição para listar as partidas que terminaram zero a zero");
         return ResponseEntity.ok(service.listarPartidasSemGols());
+    }
+
+    @GetMapping("/time/")
+    public ResponseEntity<List<PartidaDTO>> listarPartidasPorTime(@RequestParam("time") String time,
+                                                                  @RequestParam(name = "filtro", required = false) String filtro) {
+        log.info("Requisição para listar as partidas de um time específico");
+        return ResponseEntity.ok(service.listarPartidasPorTime(time, filtro));
     }
 
 

@@ -10,5 +10,9 @@ public final class ConstantesUtil {
             "seja menor que 48 horas";
     public static final String ERRO_PARTIDA_FUTURO = "Não é permitido salvar partidas em datas futuras";
     public static final String ERRO_PARTIDA_NAO_ENCONTRADA = "A partida não foi encontrada";
+    public static final String ERRO_VALOR_INVALIDO = "O valor informado não é permitido";
+
+    public static final String MANDANTE = "MANDANTE";
+    public static final String VISITANTE = "VISITANTE";
 
 }
