@@ -2,6 +2,7 @@ package com.waynesouza.soccer.service.impl;
 
 import com.waynesouza.soccer.config.exception.ParametrizedMessageException;
 import com.waynesouza.soccer.domain.Partida;
+import com.waynesouza.soccer.domain.dto.RetrospectoClubeDTO;
 import com.waynesouza.soccer.repository.PartidaRepository;
 import com.waynesouza.soccer.service.PartidaService;
 import com.waynesouza.soccer.domain.dto.PartidaAtualizadaDTO;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static com.waynesouza.soccer.util.ConstantesUtil.MANDANTE;
@@ -72,6 +74,12 @@ public class PartidaServiceImpl implements PartidaService, RegraBase {
     @Override
     public List<PartidaDTO> listarPartidasPorEstadio(String estadio) {
         return converterListaParaDTO(repository.findAllByEstadio(estadio));
+    }
+
+    @Override
+    public RetrospectoClubeDTO buscarRetrospectoTime(String time, String filtro) {
+        repository.buscarRetrospectoTime(time, filtro);
+        return null;
     }
 
     @Override

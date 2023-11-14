@@ -2,6 +2,7 @@ package com.waynesouza.soccer.repository;
 
 import com.waynesouza.soccer.domain.Partida;
 import com.waynesouza.soccer.domain.dto.PartidaDTO;
+import com.waynesouza.soccer.domain.dto.RetrospectoClubeDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -56,5 +57,27 @@ public interface PartidaRepository extends JpaRepository<Partida, String> {
                                         @Param("filtro") String filtro);
 
     List<Partida> findAllByEstadio(String estadio);
+
+    @Query("select new com.waynesouza.soccer.domain.dto.RetrospectoClubeDTO(" +
+                "sum(case when p.quantidadeGolMandante - p.quantidadeGolVisitante > 0 then 1 else 0 end), " +
+                "sum(case when p.quantidadeGolMandante - p.quantidadeGolVisitante = 0 then 1 else 0 end), " +
+                "sum(case when p.quantidadeGolVisitante - p.quantidadeGolMandante > 0 then 1 else 0 end), " +
+                "sum(p.quantidadeGolMandante), " +
+                "sum(p.quantidadeGolVisitante)" +
+            ") " +
+            "from Partida p " +
+            "where :filtro = 'MANDANTE' or :filtro is null and p.timeMandante = :time " +
+            "union all " +
+            "select new com.waynesouza.soccer.domain.dto.RetrospectoClubeDTO(" +
+                "sum(case when p.quantidadeGolVisitante - p.quantidadeGolMandante > 0 then 1 else 0 end), " +
+                "sum(case when p.quantidadeGolVisitante - p.quantidadeGolMandante = 0 then 1 else 0 end), " +
+                "sum(case when p.quantidadeGolMandante - p.quantidadeGolVisitante > 0 then 1 else 0 end), " +
+                "sum(p.quantidadeGolVisitante), " +
+                "sum(p.quantidadeGolMandante)" +
+            ") " +
+            "from Partida p " +
+            "where :filtro = 'VISITANTE' or :filtro is null and p.timeVisitante = :time")
+    List<RetrospectoClubeDTO> buscarRetrospectoTime(@Param("time") String time,
+                                                    @Param("filtro") String filtro);
 
 }

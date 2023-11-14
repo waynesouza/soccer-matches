@@ -2,6 +2,7 @@ package com.waynesouza.soccer.service;
 
 import com.waynesouza.soccer.domain.dto.PartidaAtualizadaDTO;
 import com.waynesouza.soccer.domain.dto.PartidaDTO;
+import com.waynesouza.soccer.domain.dto.RetrospectoClubeDTO;
 
 import java.util.List;
 
@@ -20,6 +21,8 @@ public interface PartidaService {
     List<PartidaDTO> listarPartidasPorTime(String time, String filtro);
 
     List<PartidaDTO> listarPartidasPorEstadio(String estadio);
+
+    RetrospectoClubeDTO buscarRetrospectoTime(String time, String filtro);
 
     void excluir(String id);
 
