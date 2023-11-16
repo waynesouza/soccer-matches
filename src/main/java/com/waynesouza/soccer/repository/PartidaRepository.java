@@ -3,6 +3,7 @@ package com.waynesouza.soccer.repository;
 import com.waynesouza.soccer.domain.Partida;
 import com.waynesouza.soccer.domain.dto.PartidaDTO;
 import com.waynesouza.soccer.domain.dto.RetrospectoClubeDTO;
+import com.waynesouza.soccer.domain.dto.RetrospectoConfrontoDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -79,5 +80,42 @@ public interface PartidaRepository extends JpaRepository<Partida, String> {
             "where :filtro = 'VISITANTE' or :filtro is null and p.timeVisitante = :time")
     List<RetrospectoClubeDTO> buscarRetrospectoTime(@Param("time") String time,
                                                     @Param("filtro") String filtro);
+
+    @Query("select new com.waynesouza.soccer.domain.dto.RetrospectoConfrontoDTO(" +
+                "sum(case " +
+                    "when p.timeMandante = :primeiroTime and p.quantidadeGolMandante - p.quantidadeGolVisitante <= 0 then 0 " +
+                    "when p.timeVisitante = :primeiroTime and p.quantidadeGolVisitante - p.quantidadeGolMandante <= 0 then 0 " +
+                    "else 1 " +
+                "end), " +
+                "sum(case " +
+                    "when p.timeMandante = :segundoTime and p.quantidadeGolMandante - p.quantidadeGolVisitante <= 0 then 0 " +
+                    "when p.timeVisitante = :segundoTime and p.quantidadeGolVisitante - p.quantidadeGolMandante <= 0 then 0 " +
+                    "else 1 " +
+                "end), " +
+                "sum(case when p.quantidadeGolMandante - p.quantidadeGolVisitante = 0 then 1 else 0 end), " +
+                "sum(case " +
+                    "when p.timeMandante = :primeiroTime then p.quantidadeGolMandante " +
+                    "when p.timeVisitante = :primeiroTime then p.quantidadeGolVisitante " +
+                    "else 0 " +
+                "end), " +
+                "sum(case " +
+                    "when p.timeMandante = :segundoTime then p.quantidadeGolMandante " +
+                    "when p.timeVisitante = :segundoTime then p.quantidadeGolVisitante " +
+                    "else 0 " +
+                "end)" +
+            ") " +
+            "from Partida p " +
+            "where (" +
+            "(:filtro = 'PRIMEIRO' and p.timeMandante = :primeiroTime and p.timeVisitante = :segundoTime) or " +
+            "(:filtro = 'SEGUNDO' and p.timeMandante = :segundoTime and p.timeVisitante = :primeiroTime)" +
+            ") or " +
+            "(" +
+            ":filtro is null and " +
+            "((p.timeMandante = :primeiroTime and p.timeVisitante = :segundoTime) or " +
+            "(p.timeMandante = :segundoTime and p.timeVisitante = :primeiroTime))" +
+            ")")
+    RetrospectoConfrontoDTO buscarRetrospectoConfronto(@Param("primeiroTime") String primeiroTime,
+                                                       @Param("segundoTime") String segundoTime,
+                                                       @Param("filtro") String filtro);
 
 }
