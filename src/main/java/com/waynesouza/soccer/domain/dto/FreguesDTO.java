@@ -7,12 +7,11 @@ import java.io.Serializable;
 
 @AllArgsConstructor
 @Getter
-public class RetrospectoClubeDTO implements Serializable {
+public class FreguesDTO implements Serializable {
 
+    private String time;
+    private Long totalPartidas;
     private Long vitorias;
-    private Long empates;
     private Long derrotas;
-    private Long golsPro;
-    private Long golsSofrido;
 
 }

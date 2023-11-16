@@ -2,6 +2,7 @@ package com.waynesouza.soccer.service.impl;
 
 import com.waynesouza.soccer.config.exception.ParametrizedMessageException;
 import com.waynesouza.soccer.domain.Partida;
+import com.waynesouza.soccer.domain.dto.FreguesDTO;
 import com.waynesouza.soccer.domain.dto.RetrospectoClubeDTO;
 import com.waynesouza.soccer.domain.dto.RetrospectoConfrontoDTO;
 import com.waynesouza.soccer.repository.PartidaRepository;
@@ -11,6 +12,7 @@ import com.waynesouza.soccer.domain.dto.PartidaDTO;
 import com.waynesouza.soccer.service.util.RegraBase;
 import com.waynesouza.soccer.util.ConstantesUtil;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.query.spi.Limit;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -78,13 +80,17 @@ public class PartidaServiceImpl implements PartidaService, RegraBase {
 
     @Override
     public RetrospectoClubeDTO buscarRetrospectoTime(String time, String filtro) {
-        repository.buscarRetrospectoTime(time, filtro);
-        return null;
+        return repository.buscarRetrospectoTime(time, filtro);
     }
 
     @Override
     public RetrospectoConfrontoDTO buscarRetrospectoConfronto(String primeiroTime, String segundoTime, String filtro) {
         return repository.buscarRetrospectoConfronto(primeiroTime, segundoTime, filtro);
+    }
+
+    @Override
+    public List<FreguesDTO> listarFregueses(String time) {
+        return repository.listarFregueses(time);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.waynesouza.soccer.controller;
 
+import com.waynesouza.soccer.domain.dto.FreguesDTO;
 import com.waynesouza.soccer.domain.dto.RetrospectoClubeDTO;
 import com.waynesouza.soccer.domain.dto.RetrospectoConfrontoDTO;
 import com.waynesouza.soccer.service.PartidaService;
@@ -88,6 +89,12 @@ public class PartidaController {
                                                                               @RequestParam(name = "filtro", required = false) String filtro) {
         log.info("Requisição para o retrospecto dos confrontos entre dois times específicos");
         return ResponseEntity.ok(service.buscarRetrospectoConfronto(primeiroTime, segundoTime, filtro));
+    }
+
+    @GetMapping("/fregueses/")
+    public ResponseEntity<List<FreguesDTO>> listarFregueses(@RequestParam("time") String time) {
+        log.info("Requisição para listar as partidas de um estádio específico");
+        return ResponseEntity.ok(service.listarFregueses(time));
     }
 
     @DeleteMapping("/{id}")

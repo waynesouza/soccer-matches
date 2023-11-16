@@ -1,6 +1,7 @@
 package com.waynesouza.soccer.repository;
 
 import com.waynesouza.soccer.domain.Partida;
+import com.waynesouza.soccer.domain.dto.FreguesDTO;
 import com.waynesouza.soccer.domain.dto.PartidaDTO;
 import com.waynesouza.soccer.domain.dto.RetrospectoClubeDTO;
 import com.waynesouza.soccer.domain.dto.RetrospectoConfrontoDTO;
@@ -60,26 +61,42 @@ public interface PartidaRepository extends JpaRepository<Partida, String> {
     List<Partida> findAllByEstadio(String estadio);
 
     @Query("select new com.waynesouza.soccer.domain.dto.RetrospectoClubeDTO(" +
-                "sum(case when p.quantidadeGolMandante - p.quantidadeGolVisitante > 0 then 1 else 0 end), " +
-                "sum(case when p.quantidadeGolMandante - p.quantidadeGolVisitante = 0 then 1 else 0 end), " +
-                "sum(case when p.quantidadeGolVisitante - p.quantidadeGolMandante > 0 then 1 else 0 end), " +
-                "sum(p.quantidadeGolMandante), " +
-                "sum(p.quantidadeGolVisitante)" +
+                "sum(case " +
+                    "when p.timeMandante = :time and p.quantidadeGolMandante - p.quantidadeGolVisitante <= 0 then 0 " +
+                    "when p.timeVisitante = :time and p.quantidadeGolVisitante - p.quantidadeGolMandante <= 0 then 0 " +
+                    "else 1 " +
+                "end), " +
+                "sum(case " +
+                    "when (p.timeMandante = :time or p.timeVisitante = :time) and p.quantidadeGolMandante - p.quantidadeGolVisitante = 0 then 1 " +
+                    "else 0 " +
+                "end), " +
+                "sum(case " +
+                    "when p.timeMandante = :time and p.quantidadeGolMandante - p.quantidadeGolVisitante >= 0 then 0 " +
+                    "when p.timeVisitante = :time and p.quantidadeGolVisitante - p.quantidadeGolMandante >= 0 then 0 " +
+                    "else 1 " +
+                "end), " +
+                "sum(case " +
+                    "when p.timeMandante = :time then p.quantidadeGolMandante " +
+                    "when p.timeVisitante = :time then p.quantidadeGolVisitante " +
+                    "else 0 " +
+                "end), " +
+                "sum(case " +
+                    "when p.timeMandante = :time then p.quantidadeGolVisitante " +
+                    "when p.timeVisitante = :time then p.quantidadeGolMandante " +
+                    "else 0 " +
+                "end)" +
             ") " +
             "from Partida p " +
-            "where :filtro = 'MANDANTE' or :filtro is null and p.timeMandante = :time " +
-            "union all " +
-            "select new com.waynesouza.soccer.domain.dto.RetrospectoClubeDTO(" +
-                "sum(case when p.quantidadeGolVisitante - p.quantidadeGolMandante > 0 then 1 else 0 end), " +
-                "sum(case when p.quantidadeGolVisitante - p.quantidadeGolMandante = 0 then 1 else 0 end), " +
-                "sum(case when p.quantidadeGolMandante - p.quantidadeGolVisitante > 0 then 1 else 0 end), " +
-                "sum(p.quantidadeGolVisitante), " +
-                "sum(p.quantidadeGolMandante)" +
-            ") " +
-            "from Partida p " +
-            "where :filtro = 'VISITANTE' or :filtro is null and p.timeVisitante = :time")
-    List<RetrospectoClubeDTO> buscarRetrospectoTime(@Param("time") String time,
-                                                    @Param("filtro") String filtro);
+            "where (" +
+                "(:filtro = 'MANDANTE' and p.timeMandante = :time) or " +
+                "(:filtro = 'VISITANTE' and p.timeVisitante = :time)" +
+            ") or " +
+            "(" +
+                ":filtro is null and " +
+                "(p.timeMandante = :time or p.timeVisitante = :time)" +
+            ")")
+    RetrospectoClubeDTO buscarRetrospectoTime(@Param("time") String time,
+                                              @Param("filtro") String filtro);
 
     @Query("select new com.waynesouza.soccer.domain.dto.RetrospectoConfrontoDTO(" +
                 "sum(case " +
@@ -106,16 +123,57 @@ public interface PartidaRepository extends JpaRepository<Partida, String> {
             ") " +
             "from Partida p " +
             "where (" +
-            "(:filtro = 'PRIMEIRO' and p.timeMandante = :primeiroTime and p.timeVisitante = :segundoTime) or " +
-            "(:filtro = 'SEGUNDO' and p.timeMandante = :segundoTime and p.timeVisitante = :primeiroTime)" +
+                "(:filtro = 'PRIMEIRO' and p.timeMandante = :primeiroTime and p.timeVisitante = :segundoTime) or " +
+                "(:filtro = 'SEGUNDO' and p.timeMandante = :segundoTime and p.timeVisitante = :primeiroTime)" +
             ") or " +
             "(" +
-            ":filtro is null and " +
-            "((p.timeMandante = :primeiroTime and p.timeVisitante = :segundoTime) or " +
-            "(p.timeMandante = :segundoTime and p.timeVisitante = :primeiroTime))" +
+                ":filtro is null and " +
+                "((p.timeMandante = :primeiroTime and p.timeVisitante = :segundoTime) or " +
+                "(p.timeMandante = :segundoTime and p.timeVisitante = :primeiroTime))" +
             ")")
     RetrospectoConfrontoDTO buscarRetrospectoConfronto(@Param("primeiroTime") String primeiroTime,
                                                        @Param("segundoTime") String segundoTime,
                                                        @Param("filtro") String filtro);
+
+    @Query("select new com.waynesouza.soccer.domain.dto.FreguesDTO(" +
+            "case when p.timeMandante = :time then p.timeVisitante else p.timeMandante end, " +
+            "count(p.id), " +
+            "sum(case " +
+                "when p.timeMandante = :time and p.quantidadeGolMandante - p.quantidadeGolVisitante <= 0 then 0 " +
+                "when p.timeVisitante = :time and p.quantidadeGolVisitante - p.quantidadeGolMandante <= 0 then 0 " +
+                "else 1 " +
+            "end), " +
+            "sum(case " +
+                "when p.timeMandante = :time and p.quantidadeGolMandante - p.quantidadeGolVisitante >= 0 then 0 " +
+                "when p.timeVisitante = :time and p.quantidadeGolVisitante - p.quantidadeGolMandante >= 0 then 0 " +
+                "else 1 " +
+            "end)) " +
+            "from Partida p " +
+            "where (p.timeMandante = :time or p.timeVisitante = :time) " +
+            "group by case when p.timeMandante = :time then p.timeVisitante else p.timeMandante end " +
+            "having " +
+                "sum(case " +
+                    "when p.timeMandante = :time and p.quantidadeGolMandante - p.quantidadeGolVisitante <= 0 then 0 " +
+                    "when p.timeVisitante = :time and p.quantidadeGolVisitante - p.quantidadeGolMandante <= 0 then 0 " +
+                    "else 1 " +
+                "end) - " +
+                "sum(case " +
+                    "when p.timeMandante = :time and p.quantidadeGolMandante - p.quantidadeGolVisitante >= 0 then 0 " +
+                    "when p.timeVisitante = :time and p.quantidadeGolVisitante - p.quantidadeGolMandante >= 0 then 0 " +
+                    "else 1 " +
+                "end) > 0 " +
+            "order by " +
+                "sum(case " +
+                    "when p.timeMandante = :time and p.quantidadeGolMandante - p.quantidadeGolVisitante <= 0 then 0 " +
+                    "when p.timeVisitante = :time and p.quantidadeGolVisitante - p.quantidadeGolMandante <= 0 then 0 " +
+                    "else 1 " +
+                "end) - " +
+                "sum(case " +
+                    "when p.timeMandante = :time and p.quantidadeGolMandante - p.quantidadeGolVisitante >= 0 then 0 " +
+                    "when p.timeVisitante = :time and p.quantidadeGolVisitante - p.quantidadeGolMandante >= 0 then 0 " +
+                    "else 1 " +
+                "end) " +
+            "desc")
+    List<FreguesDTO> listarFregueses(@Param("time") String time);
 
 }
