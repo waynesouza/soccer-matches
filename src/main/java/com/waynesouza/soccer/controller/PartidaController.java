@@ -79,7 +79,7 @@ public class PartidaController {
     @GetMapping("/retrospecto-time/")
     public ResponseEntity<RetrospectoClubeDTO> buscarRetrospectoTime(@RequestParam("time") String time,
                                                                      @RequestParam(name = "filtro", required = false) String filtro) {
-        log.info("Requisição para o retrospecto das partidas de um time específico");
+        log.info("Requisição para buscar o retrospecto das partidas de um time específico");
         return ResponseEntity.ok(service.buscarRetrospectoTime(time, filtro));
     }
 
@@ -87,7 +87,7 @@ public class PartidaController {
     public ResponseEntity<RetrospectoConfrontoDTO> buscarRetrospectoConfronto(@RequestParam("primeiroTime") String primeiroTime,
                                                                               @RequestParam("segundoTime") String segundoTime,
                                                                               @RequestParam(name = "filtro", required = false) String filtro) {
-        log.info("Requisição para o retrospecto dos confrontos entre dois times específicos");
+        log.info("Requisição para buscar o retrospecto dos confrontos entre dois times específicos");
         return ResponseEntity.ok(service.buscarRetrospectoConfronto(primeiroTime, segundoTime, filtro));
     }
 
