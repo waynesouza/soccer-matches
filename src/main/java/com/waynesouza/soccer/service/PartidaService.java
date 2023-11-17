@@ -19,6 +19,8 @@ public interface PartidaService {
 
     List<PartidaDTO> listarPartidasPorTime(String time, String filtro);
 
+    List<PartidaDTO> listarPartidasPorEstadio(String estadio);
+
     void excluir(String id);
 
 }

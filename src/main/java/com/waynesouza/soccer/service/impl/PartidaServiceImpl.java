@@ -65,10 +65,13 @@ public class PartidaServiceImpl implements PartidaService, RegraBase {
 
     @Override
     public List<PartidaDTO> listarPartidasPorTime(String time, String filtro) {
-        if (Objects.nonNull(filtro) && !List.of(MANDANTE, VISITANTE).contains(filtro)) {
-            throw new ParametrizedMessageException(ConstantesUtil.ERRO_VALOR_INVALIDO);
-        }
+        verificarRegra(Objects.nonNull(filtro) && !List.of(MANDANTE, VISITANTE).contains(filtro), ConstantesUtil.ERRO_VALOR_INVALIDO);
         return converterListaParaDTO(repository.listarPartidasPorTime(time, filtro));
+    }
+
+    @Override
+    public List<PartidaDTO> listarPartidasPorEstadio(String estadio) {
+        return converterListaParaDTO(repository.findAllByEstadio(estadio));
     }
 
     @Override

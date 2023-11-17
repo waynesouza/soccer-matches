@@ -55,4 +55,6 @@ public interface PartidaRepository extends JpaRepository<Partida, String> {
     List<Partida> listarPartidasPorTime(@Param("time") String time,
                                         @Param("filtro") String filtro);
 
+    List<Partida> findAllByEstadio(String estadio);
+
 }
