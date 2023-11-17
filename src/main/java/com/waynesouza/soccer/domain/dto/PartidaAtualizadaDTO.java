@@ -2,6 +2,7 @@ package com.waynesouza.soccer.domain.dto;
 
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Min;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@Builder
 public class PartidaAtualizadaDTO implements Serializable {
 
     private String timeMandante;
