@@ -12,9 +12,9 @@ import com.waynesouza.soccer.domain.dto.PartidaDTO;
 import com.waynesouza.soccer.service.util.RegraBase;
 import com.waynesouza.soccer.util.ConstantesUtil;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.query.spi.Limit;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -90,7 +90,7 @@ public class PartidaServiceImpl implements PartidaService, RegraBase {
 
     @Override
     public List<FreguesDTO> listarFregueses(String time) {
-        return repository.listarFregueses(time);
+        return repository.listarFregueses(time, PageRequest.of(0, 5));
     }
 
     @Override

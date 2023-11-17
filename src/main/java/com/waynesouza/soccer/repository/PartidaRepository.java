@@ -5,6 +5,7 @@ import com.waynesouza.soccer.domain.dto.FreguesDTO;
 import com.waynesouza.soccer.domain.dto.PartidaDTO;
 import com.waynesouza.soccer.domain.dto.RetrospectoClubeDTO;
 import com.waynesouza.soccer.domain.dto.RetrospectoConfrontoDTO;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -174,6 +175,7 @@ public interface PartidaRepository extends JpaRepository<Partida, String> {
                     "else 1 " +
                 "end) " +
             "desc")
-    List<FreguesDTO> listarFregueses(@Param("time") String time);
+    List<FreguesDTO> listarFregueses(@Param("time") String time,
+                                     Pageable pageable);
 
 }

@@ -93,7 +93,7 @@ public class PartidaController {
 
     @GetMapping("/fregueses/")
     public ResponseEntity<List<FreguesDTO>> listarFregueses(@RequestParam("time") String time) {
-        log.info("Requisição para listar as partidas de um estádio específico");
+        log.info("Requisição para listar os fregueses de um time específico");
         return ResponseEntity.ok(service.listarFregueses(time));
     }
 
