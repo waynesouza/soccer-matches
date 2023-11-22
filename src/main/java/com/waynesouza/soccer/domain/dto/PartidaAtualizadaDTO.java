@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@Builder
 public class PartidaAtualizadaDTO implements Serializable {
 
     private String timeMandante;
@@ -25,7 +24,7 @@ public class PartidaAtualizadaDTO implements Serializable {
 
     @Min(value = 0, message = "O valor deve ser um número inteiro maior que zero")
     @Digits(integer = 2, fraction = 0, message = "O valor deve ser um número inteiro positivo ou zero")
-    private Integer quantidadeGolVisitante;
+    private BigDecimal quantidadeGolVisitante;
 
     private LocalDateTime dataHora;
 
