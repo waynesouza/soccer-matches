@@ -20,13 +20,13 @@ public interface PartidaService {
 
     List<PartidaDTO> listarPartidasSemGols();
 
-    List<PartidaDTO> listarPartidasPorTime(String time, String filtro);
+    List<PartidaDTO> listarPartidasPorEquipe(String time, String filtro);
 
     List<PartidaDTO> listarPartidasPorEstadio(String estadio);
 
-    RetrospectoClubeDTO buscarRetrospectoTime(String time, String filtro);
+    RetrospectoClubeDTO buscarRetrospectoPorEquipe(String equipe, String filtro);
 
-    RetrospectoConfrontoDTO buscarRetrospectoConfronto(String primeiroTime, String segundoTime, String filtro);
+    RetrospectoConfrontoDTO buscarRetrospectoConfronto(String primeiraEquipe, String segundaEquipe, String filtro);
 
     List<FreguesDTO> listarFregueses(String time);
 

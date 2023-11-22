@@ -63,11 +63,11 @@ public class PartidaController {
         return ResponseEntity.ok(service.listarPartidasSemGols());
     }
 
-    @GetMapping("/time/")
-    public ResponseEntity<List<PartidaDTO>> listarPartidasPorTime(@RequestParam("time") String time,
+    @GetMapping("/equipe/")
+    public ResponseEntity<List<PartidaDTO>> listarPartidasPorTime(@RequestParam("equipe") String equipe,
                                                                   @RequestParam(name = "filtro", required = false) String filtro) {
-        log.info("Requisição para listar as partidas de um time específico");
-        return ResponseEntity.ok(service.listarPartidasPorTime(time, filtro));
+        log.info("Requisição para listar as partidas de uma equipe específica");
+        return ResponseEntity.ok(service.listarPartidasPorEquipe(equipe, filtro));
     }
 
     @GetMapping("/estadio/")
@@ -76,19 +76,19 @@ public class PartidaController {
         return ResponseEntity.ok(service.listarPartidasPorEstadio(estadio));
     }
 
-    @GetMapping("/retrospecto-time/")
-    public ResponseEntity<RetrospectoClubeDTO> buscarRetrospectoTime(@RequestParam("time") String time,
+    @GetMapping("/retrospecto-equipe/")
+    public ResponseEntity<RetrospectoClubeDTO> buscarRetrospectoTime(@RequestParam("equipe") String equipe,
                                                                      @RequestParam(name = "filtro", required = false) String filtro) {
-        log.info("Requisição para buscar o retrospecto das partidas de um time específico");
-        return ResponseEntity.ok(service.buscarRetrospectoTime(time, filtro));
+        log.info("Requisição para buscar o retrospecto das partidas de uma equipe específica");
+        return ResponseEntity.ok(service.buscarRetrospectoPorEquipe(equipe, filtro));
     }
 
     @GetMapping("/retrospecto-confronto/")
-    public ResponseEntity<RetrospectoConfrontoDTO> buscarRetrospectoConfronto(@RequestParam("primeiroTime") String primeiroTime,
-                                                                              @RequestParam("segundoTime") String segundoTime,
+    public ResponseEntity<RetrospectoConfrontoDTO> buscarRetrospectoConfronto(@RequestParam("primeiraEquipe") String primeiraEquipe,
+                                                                              @RequestParam("segundaEquipe") String segundaEquipe,
                                                                               @RequestParam(name = "filtro", required = false) String filtro) {
-        log.info("Requisição para buscar o retrospecto dos confrontos entre dois times específicos");
-        return ResponseEntity.ok(service.buscarRetrospectoConfronto(primeiroTime, segundoTime, filtro));
+        log.info("Requisição para buscar o retrospecto dos confrontos entre duas equipes específicas");
+        return ResponseEntity.ok(service.buscarRetrospectoConfronto(primeiraEquipe, segundaEquipe, filtro));
     }
 
     @GetMapping("/fregueses/")

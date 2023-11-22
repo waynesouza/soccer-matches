@@ -16,7 +16,7 @@ public class PartidaDTO implements Serializable {
     private String id;
 
     @NotNull(message = "O time mandante deve ser informado")
-    private String timeMandante;
+    private String equipeMandante;
 
     @NotNull(message = "A quantidade de gols do time mandante deve ser informada")
     @Min(value = 0, message = "O valor deve ser um número inteiro maior que zero")
@@ -24,7 +24,7 @@ public class PartidaDTO implements Serializable {
     private Integer quantidadeGolMandante;
 
     @NotNull(message = "O time visitante deve ser informado")
-    private String timeVisitante;
+    private String equipeVisitante;
 
     @NotNull(message = "A quantidade de gols do time visitante deve ser informada")
     @Min(value = 0, message = "O valor deve ser um número inteiro maior que zero")

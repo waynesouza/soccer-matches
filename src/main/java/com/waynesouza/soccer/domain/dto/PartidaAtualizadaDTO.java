@@ -13,13 +13,13 @@ import java.time.LocalDateTime;
 @Setter
 public class PartidaAtualizadaDTO implements Serializable {
 
-    private String timeMandante;
+    private String equipeMandante;
 
     @Min(value = 0, message = "O valor deve ser um número inteiro maior que zero")
     @Digits(integer = 2, fraction = 0, message = "O valor deve ser um número inteiro positivo ou zero")
     private BigDecimal quantidadeGolMandante;
 
-    private String timeVisitante;
+    private String equipeVisitante;
 
     @Min(value = 0, message = "O valor deve ser um número inteiro maior que zero")
     @Digits(integer = 2, fraction = 0, message = "O valor deve ser um número inteiro positivo ou zero")

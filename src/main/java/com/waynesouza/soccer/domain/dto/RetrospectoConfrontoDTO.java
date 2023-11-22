@@ -1,18 +1,28 @@
 package com.waynesouza.soccer.domain.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.io.Serializable;
 
-@AllArgsConstructor
 @Getter
 public class RetrospectoConfrontoDTO implements Serializable {
 
-    private Long vitoriasPrimeiroTime;
-    private Long vitoriasSegundoTime;
+    private Long vitoriasPrimeiraEquipe;
+    private Long vitoriasSegundaEquipe;
     private Long empates;
-    private Long golsPrimeiroTime;
-    private Long golsSegundoTime;
+    private Long golsPrimeiraEquipe;
+    private Long golsSegundaEquipe;
+
+    public RetrospectoConfrontoDTO(Long vitoriasPrimeiraEquipe, Long vitoriasSegundaEquipe, Long empates, Long golsPrimeiraEquipe, Long golsSegundaEquipe) {
+        this.vitoriasPrimeiraEquipe = verificarNulo(vitoriasPrimeiraEquipe);
+        this.vitoriasSegundaEquipe = verificarNulo(vitoriasSegundaEquipe);
+        this.empates = verificarNulo(empates);
+        this.golsPrimeiraEquipe = verificarNulo(golsPrimeiraEquipe);
+        this.golsSegundaEquipe = verificarNulo(golsSegundaEquipe);
+    }
+
+    private static Long verificarNulo(Long campo) {
+        return campo != null ? campo : 0L;
+    }
 
 }

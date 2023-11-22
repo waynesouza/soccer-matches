@@ -5,6 +5,7 @@ import com.waynesouza.soccer.domain.Partida;
 import com.waynesouza.soccer.domain.dto.FreguesDTO;
 import com.waynesouza.soccer.domain.dto.RetrospectoClubeDTO;
 import com.waynesouza.soccer.domain.dto.RetrospectoConfrontoDTO;
+import com.waynesouza.soccer.domain.enumeration.EnumResultado;
 import com.waynesouza.soccer.repository.PartidaRepository;
 import com.waynesouza.soccer.service.PartidaService;
 import com.waynesouza.soccer.domain.dto.PartidaAtualizadaDTO;
@@ -14,7 +15,6 @@ import com.waynesouza.soccer.util.ConstantesUtil;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -39,6 +39,7 @@ public class PartidaServiceImpl implements PartidaService, RegraBase {
     public PartidaDTO criar(PartidaDTO dto) {
         verificarRegras(dto);
         Partida partida = mapper.map(dto, Partida.class);
+        determinarResultado(partida);
         return mapper.map(repository.save(partida), PartidaDTO.class);
     }
 
@@ -49,6 +50,7 @@ public class PartidaServiceImpl implements PartidaService, RegraBase {
         mapper.map(partidaAtualizadaDTO, partidaDTO);
         verificarRegras(partidaDTO);
         Partida partida = mapper.map(partidaDTO, Partida.class);
+        determinarResultado(partida);
         return mapper.map(repository.save(partida), PartidaDTO.class);
     }
 
@@ -68,9 +70,9 @@ public class PartidaServiceImpl implements PartidaService, RegraBase {
     }
 
     @Override
-    public List<PartidaDTO> listarPartidasPorTime(String time, String filtro) {
+    public List<PartidaDTO> listarPartidasPorEquipe(String equipe, String filtro) {
         verificarRegra(Objects.nonNull(filtro) && !List.of(MANDANTE, VISITANTE).contains(filtro), ConstantesUtil.ERRO_VALOR_INVALIDO);
-        return converterListaParaDTO(repository.listarPartidasPorTime(time, filtro));
+        return converterListaParaDTO(repository.listarPartidasPorTime(equipe, filtro));
     }
 
     @Override
@@ -79,29 +81,25 @@ public class PartidaServiceImpl implements PartidaService, RegraBase {
     }
 
     @Override
-    public RetrospectoClubeDTO buscarRetrospectoTime(String time, String filtro) {
-        return repository.buscarRetrospectoTime(time, filtro);
+    public RetrospectoClubeDTO buscarRetrospectoPorEquipe(String equipe, String filtro) {
+        verificarRegra(Objects.nonNull(filtro) && !List.of(MANDANTE, VISITANTE).contains(filtro), ConstantesUtil.ERRO_VALOR_INVALIDO);
+        return repository.buscarRetrospectoTime(equipe, filtro);
     }
 
     @Override
-    public RetrospectoConfrontoDTO buscarRetrospectoConfronto(String primeiroTime, String segundoTime, String filtro) {
-        return repository.buscarRetrospectoConfronto(primeiroTime, segundoTime, filtro);
+    public RetrospectoConfrontoDTO buscarRetrospectoConfronto(String primeiraEquipe, String segundaEquipe, String filtro) {
+        return repository.buscarRetrospectoConfronto(primeiraEquipe, segundaEquipe, filtro);
     }
 
     @Override
     public List<FreguesDTO> listarFregueses(String time) {
-        return repository.listarFregueses(time, PageRequest.of(0, 5));
+        return null;
     }
 
     @Override
     public void excluir(String id) {
         Partida partida = buscarPeloId(id);
         repository.delete(partida);
-    }
-
-    private Partida buscarPeloId(String id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new ParametrizedMessageException(ConstantesUtil.ERRO_PARTIDA_NAO_ENCONTRADA));
     }
 
     private void verificarRegras(PartidaDTO dto) {
@@ -129,6 +127,22 @@ public class PartidaServiceImpl implements PartidaService, RegraBase {
 
     private Boolean verificarHorarioNoFuturo(LocalDateTime dataHora) {
         return dataHora.isAfter(LocalDateTime.now());
+    }
+
+    private void determinarResultado(Partida entity) {
+        int diferencaGols = entity.getQuantidadeGolMandante() - entity.getQuantidadeGolVisitante();
+        if (diferencaGols > 0) {
+            entity.setResultado(EnumResultado.V);
+        } else if (diferencaGols < 0) {
+            entity.setResultado(EnumResultado.D);
+        } else {
+            entity.setResultado(EnumResultado.E);
+        }
+    }
+
+    private Partida buscarPeloId(String id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ParametrizedMessageException(ConstantesUtil.ERRO_PARTIDA_NAO_ENCONTRADA));
     }
 
     private List<PartidaDTO> converterListaParaDTO(List<Partida> partidas) {
