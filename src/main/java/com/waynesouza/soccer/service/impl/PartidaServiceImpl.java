@@ -15,6 +15,7 @@ import com.waynesouza.soccer.util.ConstantesUtil;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -92,8 +93,8 @@ public class PartidaServiceImpl implements PartidaService, RegraBase {
     }
 
     @Override
-    public List<FreguesDTO> listarFregueses(String time) {
-        return null;
+    public List<FreguesDTO> listarFregueses(String equipe) {
+        return repository.listarFregueses(equipe, PageRequest.of(0, 5));
     }
 
     @Override

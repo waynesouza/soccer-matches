@@ -92,9 +92,9 @@ public class PartidaController {
     }
 
     @GetMapping("/fregueses/")
-    public ResponseEntity<List<FreguesDTO>> listarFregueses(@RequestParam("time") String time) {
-        log.info("Requisição para listar os fregueses de um time específico");
-        return ResponseEntity.ok(service.listarFregueses(time));
+    public ResponseEntity<List<FreguesDTO>> listarFregueses(@RequestParam("equipe") String equipe) {
+        log.info("Requisição para listar os fregueses de uma equipe específica");
+        return ResponseEntity.ok(service.listarFregueses(equipe));
     }
 
     @DeleteMapping("/{id}")

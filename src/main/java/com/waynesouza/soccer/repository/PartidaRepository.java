@@ -136,47 +136,46 @@ public interface PartidaRepository extends JpaRepository<Partida, String> {
     RetrospectoConfrontoDTO buscarRetrospectoConfronto(@Param("primeiraEquipe") String primeiraEquipe,
                                                        @Param("segundaEquipe") String segundaEquipe,
                                                        @Param("filtro") String filtro);
-//
-//    @Query("select new com.waynesouza.soccer.domain.dto.FreguesDTO(" +
-//            "case when p.timeMandante = :time then p.timeVisitante else p.timeMandante end, " +
-//            "count(p.id), " +
-//            "sum(case " +
-//                "when p.timeMandante = :time and p.quantidadeGolMandante - p.quantidadeGolVisitante <= 0 then 0 " +
-//                "when p.timeVisitante = :time and p.quantidadeGolVisitante - p.quantidadeGolMandante <= 0 then 0 " +
-//                "else 1 " +
-//            "end), " +
-//            "sum(case " +
-//                "when p.timeMandante = :time and p.quantidadeGolMandante - p.quantidadeGolVisitante >= 0 then 0 " +
-//                "when p.timeVisitante = :time and p.quantidadeGolVisitante - p.quantidadeGolMandante >= 0 then 0 " +
-//                "else 1 " +
-//            "end)) " +
-//            "from Partida p " +
-//            "where (p.timeMandante = :time or p.timeVisitante = :time) " +
-//            "group by case when p.timeMandante = :time then p.timeVisitante else p.timeMandante end " +
-//            "having " +
-//                "sum(case " +
-//                    "when p.timeMandante = :time and p.quantidadeGolMandante - p.quantidadeGolVisitante <= 0 then 0 " +
-//                    "when p.timeVisitante = :time and p.quantidadeGolVisitante - p.quantidadeGolMandante <= 0 then 0 " +
-//                    "else 1 " +
-//                "end) - " +
-//                "sum(case " +
-//                    "when p.timeMandante = :time and p.quantidadeGolMandante - p.quantidadeGolVisitante >= 0 then 0 " +
-//                    "when p.timeVisitante = :time and p.quantidadeGolVisitante - p.quantidadeGolMandante >= 0 then 0 " +
-//                    "else 1 " +
-//                "end) > 0 " +
-//            "order by " +
-//                "sum(case " +
-//                    "when p.timeMandante = :time and p.quantidadeGolMandante - p.quantidadeGolVisitante <= 0 then 0 " +
-//                    "when p.timeVisitante = :time and p.quantidadeGolVisitante - p.quantidadeGolMandante <= 0 then 0 " +
-//                    "else 1 " +
-//                "end) - " +
-//                "sum(case " +
-//                    "when p.timeMandante = :time and p.quantidadeGolMandante - p.quantidadeGolVisitante >= 0 then 0 " +
-//                    "when p.timeVisitante = :time and p.quantidadeGolVisitante - p.quantidadeGolMandante >= 0 then 0 " +
-//                    "else 1 " +
-//                "end) " +
-//            "desc")
-//    List<FreguesDTO> listarFregueses(@Param("time") String time,
-//                                     Pageable pageable);
+
+    @Query("select new com.waynesouza.soccer.domain.dto.FreguesDTO(" +
+            "case when p.equipeMandante.nome = :equipe then p.equipeVisitante.nome else p.equipeMandante.nome end, " +
+            "count(p.id), " +
+            "sum(case " +
+                "when p.equipeMandante.nome = :equipe and p.resultado = 'V' then 1 " +
+                "when p.equipeVisitante.nome = :equipe and p.resultado = 'D' then 1 " +
+                "else 0 " +
+            "end), " +
+            "sum(case " +
+                "when p.equipeMandante.nome = :equipe and p.resultado = 'D' then 1 " +
+                "when p.equipeVisitante.nome = :equipe and p.resultado = 'V' then 1 " +
+                "else 0 " +
+            "end)) " +
+            "from Partida p " +
+            "where (p.equipeMandante.nome = :equipe or p.equipeVisitante.nome = :equipe) " +
+            "group by case when p.equipeMandante.nome = :equipe then p.equipeVisitante.nome else p.equipeMandante.nome end " +
+            "having " +
+                "sum(case " +
+                    "when p.equipeMandante.nome = :equipe and p.resultado = 'V' then 1 " +
+                    "when p.equipeVisitante.nome = :equipe and p.resultado = 'D' then 1 " +
+                    "else 0 " +
+                "end) - " +
+                "sum(case " +
+                    "when p.equipeMandante.nome = :equipe and p.resultado = 'D' then 1 " +
+                    "when p.equipeVisitante.nome = :equipe and p.resultado = 'V' then 1 " +
+                    "else 0 " +
+                "end) > 0 " +
+            "order by " +
+                "sum(case " +
+                    "when p.equipeMandante.nome = :equipe and p.resultado = 'V' then 1 " +
+                    "when p.equipeVisitante.nome = :equipe and p.resultado = 'D' then 1 " +
+                    "else 0 " +
+                "end) - " +
+                "sum(case " +
+                    "when p.equipeMandante.nome = :equipe and p.resultado = 'D' then 1 " +
+                    "when p.equipeVisitante.nome = :equipe and p.resultado = 'V' then 1 " +
+                    "else 0 " +
+                "end) " +
+            "desc")
+    List<FreguesDTO> listarFregueses(@Param("equipe") String equipe, Pageable pageable);
 
 }
