@@ -14,5 +14,7 @@ public final class ConstantesUtil {
 
     public static final String MANDANTE = "MANDANTE";
     public static final String VISITANTE = "VISITANTE";
+    public static final String PRIMEIRO = "PRIMEIRO";
+    public static final String SEGUNDO = "SEGUNDO";
 
 }
