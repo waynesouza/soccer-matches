@@ -25,7 +25,7 @@ public interface PartidaRepository extends JpaRepository<Partida, String> {
 
     @Query("select count(p) > 0 from Partida p " +
             "where (" +
-                "coalesce(:#{#dto.id}, null) is null or p.id != :#{#dto.id}" +
+                ":#{#dto.id} is null or p.id != :#{#dto.id}" +
             ") " +
             "and (" +
                 "p.timeMandante in (:#{#dto.timeMandante}, :#{#dto.timeVisitante}) or " +
