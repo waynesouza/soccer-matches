@@ -26,6 +26,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.waynesouza.soccer.util.ConstantesUtil.MANDANTE;
+import static com.waynesouza.soccer.util.ConstantesUtil.PRIMEIRO;
+import static com.waynesouza.soccer.util.ConstantesUtil.SEGUNDO;
 import static com.waynesouza.soccer.util.ConstantesUtil.VISITANTE;
 
 @Service
@@ -80,11 +82,13 @@ public class PartidaServiceImpl implements PartidaService, RegraBase {
 
     @Override
     public RetrospectoClubeDTO buscarRetrospectoTime(String time, String filtro) {
+        verificarRegra(Objects.nonNull(filtro) && !List.of(MANDANTE, VISITANTE).contains(filtro), ConstantesUtil.ERRO_VALOR_INVALIDO);
         return repository.buscarRetrospectoTime(time, filtro);
     }
 
     @Override
     public RetrospectoConfrontoDTO buscarRetrospectoConfronto(String primeiroTime, String segundoTime, String filtro) {
+        verificarRegra(Objects.nonNull(filtro) && !List.of(PRIMEIRO, SEGUNDO).contains(filtro), ConstantesUtil.ERRO_VALOR_INVALIDO);
         return repository.buscarRetrospectoConfronto(primeiroTime, segundoTime, filtro);
     }
 
